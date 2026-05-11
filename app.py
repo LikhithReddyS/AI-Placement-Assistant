@@ -17,7 +17,7 @@ st.markdown("""
 <style>
     /* ---------- global ---------- */
     .main { background-color: #0e1117; }
-    .block-container { padding-top: 2rem; }
+    .block-container { padding-top: 3.5rem; }
 
     /* ---------- hero ---------- */
     .hero-title {
