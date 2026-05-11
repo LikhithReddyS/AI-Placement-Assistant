@@ -9,11 +9,11 @@ A production-ready, multi-module Streamlit web application that helps students p
 ### 1. 📊 Eligibility Predictor
 Predicts whether a student is likely to be placed based on academic profile (CGPA, backlogs, internships, skills, branch) using a **Random Forest** classifier trained on 500 synthetic student records. Shows prediction confidence and feature importance.
 
-### 2. 📝 Resume–JD Match Scorer
-Compares a résumé against a job description using **TF-IDF vectorization** and **cosine similarity**. Displays a match percentage with a color-coded progress bar, top matching keywords, and missing important keywords from the JD.
+### 2. 📝 Strict ATS Resume Scorer
+Upload your résumé & job description as **PDFs** (or paste text) and get a strict ATS compatibility score out of **100**. Breakdown includes keyword match (35 pts), TF-IDF cosine similarity (20 pts), section completeness (15 pts), action verbs & quantified impact (10 pts), formatting checks (10 pts), and a relevance penalty (−10 pts). AI-powered improvement suggestions via **Groq API**.
 
 ### 3. 🤖 Mock Interview Bot
-Generates 5 role-specific technical interview questions via the **Google Gemini API** (gemini-1.5-flash). After each answer the AI evaluates your response with a score, strengths, weaknesses, and an ideal answer summary. A final scorecard is shown at the end.
+Generates 5 role-specific technical interview questions via the **Groq API** (Llama 3.3 70B). Includes anti-cheating proctoring: fullscreen lock, tab-switch detection, and copy/paste blocking. After each answer the AI evaluates your response with a score, strengths, weaknesses, and an ideal answer summary. A final scorecard is shown at the end.
 
 ---
 
@@ -26,7 +26,8 @@ Generates 5 role-specific technical interview questions via the **Google Gemini 
 | scikit-learn | ML model & TF-IDF |
 | Pandas / NumPy | Data processing |
 | Matplotlib / Seaborn | Visualizations |
-| Google Gemini API | Generative AI for interviews |
+| Groq API (Llama 3.3) | Generative AI for interviews & ATS |
+| pdfplumber | PDF text extraction |
 | Joblib | Model serialization |
 
 ---
@@ -35,7 +36,7 @@ Generates 5 role-specific technical interview questions via the **Google Gemini 
 
 ### Prerequisites
 - Python 3.10 or higher
-- A Google Gemini API key
+- A Groq API key (free at https://console.groq.com)
 
 ### Steps
 
@@ -51,9 +52,9 @@ venv\Scripts\activate        # Windows
 # 3. Install dependencies
 pip install -r requirements.txt
 
-# 4. Add your Gemini API key
-#    Edit .streamlit/secrets.toml and replace the placeholder key
-#    GEMINI_API_KEY = "your_key_here"
+# 4. Add your Groq API key
+#    Create .streamlit/secrets.toml with:
+#    GROQ_API_KEY = "your_groq_key_here"
 
 # 5. Train the ML model (one-time)
 python train_model.py

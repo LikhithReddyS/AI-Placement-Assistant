@@ -106,11 +106,12 @@ with col2:
     st.markdown("""
     <div class="module-card">
         <div class="module-icon">📝</div>
-        <div class="module-title">Resume–JD Match Scorer</div>
+        <div class="module-title">Strict ATS Resume Scorer</div>
         <div class="module-desc">
-            Paste your résumé text and a job description side-by-side. The scorer
-            computes a TF-IDF cosine-similarity match percentage, highlights the
-            top matching keywords, and flags important terms you're missing.
+            Upload your résumé &amp; job description as PDFs (or paste text). Get a
+            strict ATS compatibility score out of 100 with keyword matching,
+            section analysis, action-verb detection, formatting checks &amp;
+            AI-powered improvement suggestions.
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -122,8 +123,8 @@ with col3:
         <div class="module-title">Mock Interview Bot</div>
         <div class="module-desc">
             Choose a target role and face 5 AI-generated technical interview
-            questions. After each answer the Gemini-powered evaluator scores you,
-            highlights strengths &amp; gaps, and provides an ideal answer summary.
+            questions with anti-cheating proctoring (fullscreen lock, tab-switch
+            detection, copy/paste blocked). AI evaluator scores each answer.
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -144,8 +145,8 @@ st.markdown("### 🛠️  Tech Stack")
 
 techs = [
     "Python 3.10+", "Streamlit", "scikit-learn", "Pandas",
-    "NumPy", "Matplotlib", "Seaborn", "Google Gemini API",
-    "TF-IDF / Cosine Similarity", "Random Forest",
+    "NumPy", "Matplotlib", "Seaborn", "Groq API (Llama 3.3)",
+    "TF-IDF / Cosine Similarity", "Random Forest", "pdfplumber",
 ]
 badges_html = "".join(f'<span class="tech-badge">{t}</span>' for t in techs)
 st.markdown(f"<div style='text-align:center;'>{badges_html}</div>", unsafe_allow_html=True)
