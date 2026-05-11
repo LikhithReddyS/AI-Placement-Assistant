@@ -49,17 +49,85 @@ for k, v in defaults.items():
     if k not in st.session_state:
         st.session_state[k] = v
 
-ROLES = ["Software Engineer", "Data Analyst", "ML Engineer", "Business Analyst"]
+ROLES = [
+    "Software Engineer",
+    "Frontend Developer",
+    "Backend Developer",
+    "Full Stack Developer",
+    "Data Analyst",
+    "Data Scientist",
+    "ML Engineer",
+    "AI Engineer",
+    "Data Engineer",
+    "DevOps Engineer",
+    "Cloud Engineer",
+    "Cybersecurity Analyst",
+    "Business Analyst",
+    "Product Manager",
+    "QA / Test Engineer",
+    "Mobile App Developer",
+    "Embedded Systems Engineer",
+    "Database Administrator",
+    "Network Engineer",
+    "UI/UX Designer",
+    "System Administrator",
+    "Blockchain Developer",
+    "Game Developer",
+    "Technical Writer",
+    "IT Support / Helpdesk",
+]
 role = st.selectbox("🎯 Select Target Role", ROLES, disabled=st.session_state.interview_started)
 
 
 # ── AI helpers ───────────────────────────────────────────────
+import random, time
+
+# Topic pools per category to force diversity
+_FOCUS_AREAS = {
+    "Software Engineer": ["system design", "OOP principles", "algorithms", "databases", "concurrency", "testing", "API design", "design patterns", "microservices", "version control"],
+    "Frontend Developer": ["React/Vue lifecycle", "CSS layout", "accessibility", "performance optimization", "state management", "browser APIs", "responsive design", "SEO", "web security", "build tools"],
+    "Backend Developer": ["REST vs GraphQL", "database indexing", "caching strategies", "authentication", "message queues", "load balancing", "logging", "API versioning", "ORM patterns", "serverless"],
+    "Full Stack Developer": ["deployment pipelines", "SSR vs CSR", "database migrations", "WebSockets", "API integration", "monolith vs microservices", "session management", "Docker", "CI/CD", "monitoring"],
+    "Data Analyst": ["SQL window functions", "data visualization", "A/B testing", "ETL pipelines", "Excel pivot tables", "statistics", "data cleaning", "dashboard design", "KPI definition", "cohort analysis"],
+    "Data Scientist": ["feature engineering", "model evaluation metrics", "bias/variance tradeoff", "NLP techniques", "time series", "dimensionality reduction", "Bayesian methods", "experiment design", "deep learning", "model deployment"],
+    "ML Engineer": ["MLOps pipelines", "model serving", "hyperparameter tuning", "distributed training", "feature stores", "model monitoring", "transfer learning", "data augmentation", "A/B testing ML models", "edge deployment"],
+    "AI Engineer": ["transformer architecture", "RAG systems", "prompt engineering", "fine-tuning LLMs", "vector databases", "reinforcement learning", "computer vision", "multi-modal AI", "AI ethics", "agentic systems"],
+    "Data Engineer": ["Spark/Hadoop", "data warehousing", "schema design", "streaming vs batch", "data governance", "Airflow DAGs", "lake vs warehouse", "partitioning", "CDC patterns", "data quality"],
+    "DevOps Engineer": ["CI/CD pipelines", "Kubernetes", "infrastructure as code", "monitoring/alerting", "container orchestration", "secrets management", "blue-green deployments", "incident response", "Terraform", "GitOps"],
+    "Cloud Engineer": ["AWS/Azure/GCP services", "VPC networking", "auto-scaling", "cost optimization", "IAM policies", "serverless architecture", "disaster recovery", "multi-region", "cloud security", "migration strategies"],
+    "Cybersecurity Analyst": ["OWASP top 10", "penetration testing", "SIEM tools", "incident response", "encryption protocols", "network forensics", "zero trust", "vulnerability assessment", "compliance frameworks", "threat modeling"],
+    "Business Analyst": ["requirements gathering", "stakeholder management", "use case diagrams", "agile methodology", "gap analysis", "process mapping", "SWOT analysis", "data-driven decisions", "user stories", "feasibility study"],
+    "Product Manager": ["roadmap prioritization", "user research", "OKRs/KPIs", "go-to-market strategy", "competitor analysis", "feature scoping", "cross-functional leadership", "MVP definition", "pricing strategy", "retention metrics"],
+    "QA / Test Engineer": ["test automation", "regression testing", "API testing", "performance testing", "test case design", "BDD/TDD", "CI integration", "bug lifecycle", "load testing", "security testing"],
+    "Mobile App Developer": ["iOS vs Android lifecycle", "state management", "push notifications", "offline storage", "app performance", "responsive layouts", "REST integration", "app store deployment", "cross-platform frameworks", "deep linking"],
+    "Embedded Systems Engineer": ["RTOS concepts", "memory management", "interrupt handling", "I2C/SPI protocols", "firmware debugging", "power optimization", "bare-metal programming", "sensor integration", "bootloader design", "hardware-software co-design"],
+    "Database Administrator": ["query optimization", "replication strategies", "backup/recovery", "normalization", "sharding", "stored procedures", "transaction isolation", "indexing strategies", "NoSQL vs SQL", "database security"],
+    "Network Engineer": ["TCP/IP stack", "routing protocols", "firewall configuration", "DNS/DHCP", "VPN setup", "network troubleshooting", "QoS", "SDN concepts", "wireless networking", "network automation"],
+    "UI/UX Designer": ["user research methods", "wireframing", "design systems", "usability testing", "information architecture", "accessibility standards", "interaction design", "prototyping tools", "color theory", "responsive design"],
+    "Blockchain Developer": ["consensus mechanisms", "smart contracts", "DeFi protocols", "gas optimization", "token standards", "Layer 2 solutions", "wallet integration", "on-chain vs off-chain", "security audits", "DAO governance"],
+    "Game Developer": ["game loop architecture", "physics engines", "shaders/rendering", "multiplayer networking", "AI pathfinding", "memory optimization", "asset pipelines", "level design tools", "input handling", "cross-platform builds"],
+}
+
+
 def gen_questions(r):
-    prompt = f"Generate exactly 5 technical interview questions for a {r} role. Return ONLY a JSON array of 5 strings. No extra text."
+    # Pick 3 random focus areas to force topic diversity each session
+    focus_pool = _FOCUS_AREAS.get(r, ["general concepts", "problem solving", "system design", "best practices", "real-world scenarios"])
+    focus_picks = random.sample(focus_pool, min(3, len(focus_pool)))
+    seed = random.randint(1000, 9999)
+
+    prompt = (
+        f"Generate exactly 5 unique technical interview questions for a {r} role. "
+        f"Make sure to cover these topics: {', '.join(focus_picks)}. "
+        f"The questions must be diverse — mix conceptual, scenario-based, and problem-solving types. "
+        f"Do NOT repeat common/generic questions. Be creative and specific. "
+        f"Session seed: {seed}. "
+        f"Return ONLY a JSON array of 5 strings. No extra text."
+    )
     resp = groq_client.chat.completions.create(
         model=GROQ_MODEL,
         messages=[{"role": "user", "content": prompt}],
-        temperature=0.7,
+        temperature=0.95,
+        top_p=0.95,
     )
     text = resp.choices[0].message.content.strip()
     m = re.search(r"\[.*\]", text, re.DOTALL)
